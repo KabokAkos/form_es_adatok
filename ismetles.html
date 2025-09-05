@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ismétlés</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        #datas {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            padding: 8px;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .card {
+            padding: 15px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            width: 100%;
+            text-align: left;
+            border-radius: 5px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .no-data {
+            margin-top: 20px;
+            font-size: 18px;
+            color: red;
+        }
+
+        .clear-btn {
+            background-color: #f44336;
+        }
+
+        .clear-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+
+<body onload="showData()">
+    <div id="container">
+        <div id="datas">
+            <label for="name">Név: </label>
+            <input type="text" name="name" id="name">
+            <label for="zipCode">Irányítószám: </label>
+            <input type="text" name="zipCode" id="zipCode">
+            <label for="city">Település: </label>
+            <input type="text" name="city" id="city">
+            <label for="adressLine">Közterület: </label>
+            <input type="text" name="adressLine" id="adressLine">
+            <label for="number">Házszám: </label>
+            <input type="text" name="number" id="number">
+            <button onclick="showData(); save()">Mentés</button>
+            <button class="clear-btn" onclick="clearData()">Adatok törlése</button>
+        </div>
+
+        <div id="card-container"></div>
+    </div>
+
+    <script>
+        let nameInput = document.getElementById("name");
+        let zipCodeInput = document.getElementById("zipCode");
+        let cityInput = document.getElementById("city");
+        let adressLineInput = document.getElementById("adressLine");
+        let numberInput = document.getElementById("number");
+
+        function save() {
+            let name = nameInput.value;
+            let zipCode = zipCodeInput.value;
+            let city = cityInput.value;
+            let adressLine = adressLineInput.value;
+            let number = numberInput.value;
+
+            if (!name || !zipCode || !city || !adressLine || !number) {
+                alert("Minden adatot meg kell adni!");
+                return;
+            }
+
+            localStorage.setItem('name_data', name);
+            localStorage.setItem('zipCode_data', zipCode);
+            localStorage.setItem('city_data', city);
+            localStorage.setItem('adressLine_data', adressLine);
+            localStorage.setItem('number_data', number);
+
+            alert("Adatok sikeresen mentve!");
+            showData();
+        }
+
+        function showData() {
+            let name = localStorage.getItem('name_data');
+            let zipCode = localStorage.getItem('zipCode_data');
+            let city = localStorage.getItem('city_data');
+            let adressLine = localStorage.getItem('adressLine_data');
+            let number = localStorage.getItem('number_data');
+
+            let cardContainer = document.getElementById('card-container');
+
+            if (name && zipCode && city && adressLine && number) {
+                let card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `
+                    <h3>Mentett Adatok</h3>
+                    <p><strong>Név:</strong> ${name}</p>
+                    <p><strong>Irányítószám:</strong> ${zipCode}</p>
+                    <p><strong>Település:</strong> ${city}</p>
+                    <p><strong>Közterület:</strong> ${adressLine}</p>
+                    <p><strong>Házszám:</strong> ${number}</p>
+                `;
+                cardContainer.innerHTML = '';
+                cardContainer.appendChild(card);
+            } else {
+                cardContainer.innerHTML = '<p class="no-data">Nincs mentett adat.</p>';
+            }
+        }
+
+        function clearData() {
+            localStorage.removeItem('name_data');
+            localStorage.removeItem('zipCode_data');
+            localStorage.removeItem('city_data');
+            localStorage.removeItem('adressLine_data');
+            localStorage.removeItem('number_data');
+
+            alert("Adatok törölve!");
+            showData(); 
+        }
+    </script>
+    
+</body>
+
+</html>
