@@ -110,7 +110,7 @@
             <input type="text" name="adressLine" id="adressLine">
             <label for="number">Házszám: </label>
             <input type="text" name="number" id="number">
-            <button onclick="showData(); save()">Mentés</button>
+            <button onclick="save()">Mentés</button>
             <button class="clear-btn" onclick="clearData()">Adatok törlése</button>
         </div>
 
@@ -118,53 +118,52 @@
     </div>
 
     <script>
-        let nameInput = document.getElementById("name");
-        let zipCodeInput = document.getElementById("zipCode");
-        let cityInput = document.getElementById("city");
-        let adressLineInput = document.getElementById("adressLine");
-        let numberInput = document.getElementById("number");
+        const nameInput = document.getElementById("name");
+        const zipCodeInput = document.getElementById("zipCode");
+        const cityInput = document.getElementById("city");
+        const adressLineInput = document.getElementById("adressLine");
+        const numberInput = document.getElementById("number");
 
         function save() {
-            let name = nameInput.value;
-            let zipCode = zipCodeInput.value;
-            let city = cityInput.value;
-            let adressLine = adressLineInput.value;
-            let number = numberInput.value;
+            let data = {
+                name: nameInput.value,
+                zipCode: zipCodeInput.value,
+                city: cityInput.value,
+                adressLine: adressLineInput.value,
+                number: numberInput.value
+            };
 
-            if (!name || !zipCode || !city || !adressLine || !number) {
+            if (!data.name || !data.zipCode || !data.city || !data.adressLine || !data.number) {
                 alert("Minden adatot meg kell adni!");
                 return;
             }
 
-            localStorage.setItem('name_data', name);
-            localStorage.setItem('zipCode_data', zipCode);
-            localStorage.setItem('city_data', city);
-            localStorage.setItem('adressLine_data', adressLine);
-            localStorage.setItem('number_data', number);
+            localStorage.setItem('saved_data', JSON.stringify(data));
+
+            nameInput.value = '';
+            zipCodeInput.value = '';
+            cityInput.value = '';
+            adressLineInput.value = '';
+            numberInput.value = '';
 
             alert("Adatok sikeresen mentve!");
             showData();
         }
 
         function showData() {
-            let name = localStorage.getItem('name_data');
-            let zipCode = localStorage.getItem('zipCode_data');
-            let city = localStorage.getItem('city_data');
-            let adressLine = localStorage.getItem('adressLine_data');
-            let number = localStorage.getItem('number_data');
-
+            let savedData = JSON.parse(localStorage.getItem('saved_data'));
             let cardContainer = document.getElementById('card-container');
 
-            if (name && zipCode && city && adressLine && number) {
+            if (savedData) {
                 let card = document.createElement('div');
                 card.classList.add('card');
                 card.innerHTML = `
                     <h3>Mentett Adatok</h3>
-                    <p><strong>Név:</strong> ${name}</p>
-                    <p><strong>Irányítószám:</strong> ${zipCode}</p>
-                    <p><strong>Település:</strong> ${city}</p>
-                    <p><strong>Közterület:</strong> ${adressLine}</p>
-                    <p><strong>Házszám:</strong> ${number}</p>
+                    <p><strong>Név:</strong> ${savedData.name}</p>
+                    <p><strong>Irányítószám:</strong> ${savedData.zipCode}</p>
+                    <p><strong>Település:</strong> ${savedData.city}</p>
+                    <p><strong>Közterület:</strong> ${savedData.adressLine}</p>
+                    <p><strong>Házszám:</strong> ${savedData.number}</p>
                 `;
                 cardContainer.innerHTML = '';
                 cardContainer.appendChild(card);
@@ -174,17 +173,13 @@
         }
 
         function clearData() {
-            localStorage.removeItem('name_data');
-            localStorage.removeItem('zipCode_data');
-            localStorage.removeItem('city_data');
-            localStorage.removeItem('adressLine_data');
-            localStorage.removeItem('number_data');
-
+            localStorage.removeItem('saved_data');
             alert("Adatok törölve!");
-            showData(); 
+            showData();
         }
+
+        showData();
     </script>
-    
 </body>
 
 </html>
